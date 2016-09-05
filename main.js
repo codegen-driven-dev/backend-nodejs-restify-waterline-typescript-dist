@@ -16,19 +16,17 @@ exports.waterline_config = Object.freeze({
         postgres: waterline_postgres
     },
     defaults: {
-        migrate: 'create',
+        migrate: 'create'
     },
     connections: {
-        postgres: nodejs_utils_1.trivial_merge({
-            adapter: 'postgres'
-        }, !process.env.DOKKU_POSTGRES_REST_API_DB_PORT_5432_TCP_ADDR ?
-            nodejs_utils_1.uri_to_config(db_uri) : {
-            "database": db_uri.substr(db_uri.lastIndexOf('/') + 1),
-            "host": process.env.DOKKU_POSTGRES_REST_API_DB_PORT_5432_TCP_ADDR,
-            "identity": "postgres",
-            "password": process.env.DOKKU_POSTGRES_REST_API_DB_ENV_POSTGRES_PASSWORD,
-            "user": "postgres",
-        })
+        postgres: {
+            adapter: 'postgres',
+            connection: nodejs_utils_1.uri_to_config(db_uri),
+            pool: {
+                min: 2,
+                max: 20
+            }
+        }
     }
 });
 exports.all_models_and_routes = nodejs_utils_1.populateModelRoutes('.');
@@ -37,6 +35,7 @@ exports.redis_cursors = {
 };
 exports.c = { collections: [], connections: [] };
 var _cache = {};
+exports.logger.info('waterline_config =', exports.waterline_config);
 exports.strapFrameworkKwargs = Object.freeze({
     app_name: exports.package_.name,
     models_and_routes: exports.all_models_and_routes,
