@@ -1,6 +1,6 @@
 {
   "name": "restify_waterline_scaffold",
-  "version": "0.0.8-alpha",
+  "version": "0.0.8",
   "description": "Simple baseline scaffold to get you started using Restify and Waterline with TypeScript.",
   "main": "main.js",
   "author": "Samuel Marks <samuelmarks@gmail.com>",
@@ -9,7 +9,7 @@
   },
   "license": "Apache-2.0",
   "scripts": {
-    "start": "node main.js",
+    "start": "node main.js | node_modules/bunyan/bin/bunyan",
     "test": "mocha test --recursive"
   },
   "dependencies": {
@@ -32,6 +32,7 @@
     "tv4": "^1.2.7",
     "typescript": "^1.8.10",
     "waterline": "^0.12.2",
-    "waterline-postgresql": "^0.14.8"
+    "waterline-postgresql": "^0.14.8",
+    "bunyan": "^1.8.1"
   }
 }

@@ -29,7 +29,7 @@ Clone [backend-nodejs-restify-waterline-typescript](https://github.com/codegen-d
 
 ### Cleanup compiled output
 
-When not add *.js to `.gitignore`, clean out compiled js with this GNU findutils solution:
+When not adding '*.js' to `.gitignore`, clean out compiled js with this GNU findutils solution:
 
     find -name '*.js.map' -type f -exec bash -c 'rm "${1}" "${1%????}"' bash {} \;
 

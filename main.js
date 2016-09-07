@@ -35,7 +35,6 @@ exports.redis_cursors = {
 };
 exports.c = { collections: [], connections: [] };
 var _cache = {};
-exports.logger.info('waterline_config =', exports.waterline_config);
 exports.strapFrameworkKwargs = Object.freeze({
     app_name: exports.package_.name,
     models_and_routes: exports.all_models_and_routes,
