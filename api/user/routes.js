@@ -16,9 +16,13 @@ function create(app, namespace) {
                 return next(restify_errors_1.fmtError(error));
             else if (!user)
                 return next(restify_errors_1.NotFoundError('User'));
-            res.setHeader('X-Access-Token', models_1.AccessToken().add(req.body.email, 'login'));
-            res.json(201, user);
-            return next();
+            models_1.AccessToken().add(req.body.email, 'login', function (err, access_token) {
+                if (err)
+                    return next(restify_errors_1.fmtError(err));
+                res.setHeader('X-Access-Token', access_token);
+                res.json(201, user);
+                return next();
+            });
         });
     });
 }

@@ -13,45 +13,29 @@ exports.AccessToken = function () {
                 return cb(new restify_errors_1.NotFoundError('AccessToken'));
             return cb(void 0, user_id);
         }); },
-        deleteOne: function (access_token) { return redis.del(access_token); },
-        add: function (user_id, scope) {
+        deleteOne: function (access_token, cb) { return redis.del(access_token, cb); },
+        add: function (user_id, scope, cb) {
             var new_key = scope + "::" + node_uuid_1.v4();
             var t = redis.multi();
             t.set(new_key, user_id);
             t.sadd(user_id, new_key);
-            t.exec();
-            return new_key;
+            t.exec(function (err) { return cb(err, new_key); });
         },
         logout: function logout(redis) {
             return function (id, cb) {
                 if (id.user_id)
-                    redis.smembers(id.user_id, function (err, res) {
+                    redis.smembers(id.user_id, function (err, access_tokens) {
                         if (err)
                             return cb(err);
-                        var errors = Array();
                         var t = redis.multi();
-                        res.forEach(function (token) { return t.del(token, function (e, r) {
-                            if (e)
-                                errors.push(e);
-                        }); });
-                        if (errors.length)
-                            return cb(new restify_errors_1.GenericError({
+                        t.del.apply(t, access_tokens);
+                        t.exec(function (errors) {
+                            return cb(errors && errors.length ? new restify_errors_1.GenericError({
                                 statusCode: 400,
                                 error: 'LogoutErrors',
                                 error_message: JSON.stringify(errors)
-                            }));
-                        t.del(id.user_id, function (e, r) {
-                            if (e)
-                                errors.push(e);
+                            }) : null);
                         });
-                        t.exec();
-                        if (errors.length)
-                            return cb(new restify_errors_1.GenericError({
-                                statusCode: 400,
-                                error: 'LogoutErrors',
-                                error_message: JSON.stringify(errors)
-                            }));
-                        return cb(null);
                     });
                 else if (id.access_token)
                     redis.get(id.access_token, function (err, user_id) {

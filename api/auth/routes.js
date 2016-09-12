@@ -17,7 +17,7 @@ function login(app, namespace) {
             }, function (err, user) {
                 return cb(err ? err : !user ? new restify_errors_1.NotFoundError('User') : null);
             }); },
-            function (cb) { return cb(null, models_1.AccessToken().add(req.body.email, 'login')); }
+            function (cb) { return models_1.AccessToken().add(req.body.email, 'login', cb); }
         ], function (error, access_token) {
             if (error)
                 return next(restify_errors_1.fmtError(error));
@@ -30,7 +30,7 @@ function login(app, namespace) {
 exports.login = login;
 function logout(app, namespace) {
     if (namespace === void 0) { namespace = ""; }
-    app.del(namespace, middleware_1.has_auth('login'), function (req, res, next) {
+    app.del(namespace, middleware_1.has_auth(), function (req, res, next) {
         models_1.AccessToken().logout({ access_token: req.headers['x-access-token'] }, function (error) {
             if (error)
                 res.json(400, error);
