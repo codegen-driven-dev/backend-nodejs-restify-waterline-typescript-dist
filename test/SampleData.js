@@ -1,10 +1,10 @@
 "use strict";
-var async_1 = require('async');
-var http_1 = require('http');
-var url = require('url');
-var nodejs_utils_1 = require('nodejs-utils');
-var restify_1 = require('restify');
-var user_mocks_1 = require('./api/user/user_mocks');
+var url = require("url");
+var async_1 = require("async");
+var http_1 = require("http");
+var nodejs_utils_1 = require("nodejs-utils");
+var restify_1 = require("restify");
+var user_mocks_1 = require("./api/user/user_mocks");
 function httpF(method) {
     return function (options, func_name, body_or_cb, cb) {
         if (!cb) {

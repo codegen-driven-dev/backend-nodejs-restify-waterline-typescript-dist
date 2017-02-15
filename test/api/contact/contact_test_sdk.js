@@ -7,22 +7,22 @@ var restify_errors_1 = require("restify-errors");
 var chaiJsonSchema = require("chai-json-schema");
 var models_1 = require("../../../api/user/models");
 var user_schema = nodejs_utils_1.sanitiseSchema(require('./../user/schema.json'), models_1.User._omit);
-var message_schema = require('./schema.json');
+var contact_schema = require('./schema.json');
 chai.use(chaiJsonSchema);
-var MessageTestSDK = (function () {
-    function MessageTestSDK(app) {
+var AddressBookTestSDK = (function () {
+    function AddressBookTestSDK(app) {
         this.app = app;
     }
-    MessageTestSDK.prototype.create = function (access_token, msg, cb) {
+    AddressBookTestSDK.prototype.create = function (access_token, contact, cb) {
         if (!access_token)
             return cb(new TypeError('`access_token` argument to `create` must be defined'));
-        else if (!msg)
-            return cb(new TypeError('`msg` argument to `create` must be defined'));
+        else if (!contact)
+            return cb(new TypeError('`contact` argument to `create` must be defined'));
         supertest(this.app)
-            .post("/api/message/" + msg.to)
+            .post('/api/contact')
             .set('Connection', 'keep-alive')
             .set('X-Access-Token', access_token)
-            .send(msg)
+            .send(contact)
             .expect('Content-Type', /json/)
             .end(function (err, res) {
             if (err)
@@ -32,7 +32,7 @@ var MessageTestSDK = (function () {
             try {
                 chai_1.expect(res.status).to.be.equal(201);
                 chai_1.expect(res.body).to.be.an('object');
-                chai_1.expect(res.body).to.be.jsonSchema(message_schema);
+                chai_1.expect(res.body).to.be.jsonSchema(contact_schema);
             }
             catch (e) {
                 err = e;
@@ -42,13 +42,13 @@ var MessageTestSDK = (function () {
             }
         });
     };
-    MessageTestSDK.prototype.getAll = function (access_token, msg, cb) {
+    AddressBookTestSDK.prototype.getAll = function (access_token, contact, cb) {
         if (!access_token)
             return cb(new TypeError('`access_token` argument to `getAll` must be defined'));
-        else if (!msg)
-            return cb(new TypeError('`msg` argument to `getAll` must be defined'));
+        else if (!contact)
+            return cb(new TypeError('`contact` argument to `getAll` must be defined'));
         supertest(this.app)
-            .get("/api/message/" + msg.to)
+            .get('/api/contact')
             .set('Connection', 'keep-alive')
             .set('X-Access-Token', access_token)
             .expect('Content-Type', /json/)
@@ -59,13 +59,12 @@ var MessageTestSDK = (function () {
             else if (res.error)
                 return cb(res.error);
             try {
-                chai_1.expect(res.body).to.have.property('from');
-                chai_1.expect(res.body).to.have.property('to');
-                chai_1.expect(res.body).to.have.property('messages');
-                chai_1.expect(res.body.messages).to.be.instanceOf(Array);
-                res.body.messages.map(function (msg) {
-                    chai_1.expect(msg).to.be.an('object');
-                    chai_1.expect(msg).to.be.jsonSchema(message_schema);
+                chai_1.expect(res.body).to.have.property('owner');
+                chai_1.expect(res.body).to.have.property('contacts');
+                chai_1.expect(res.body.contacts).to.be.instanceOf(Array);
+                res.body.contacts.map(function (contact) {
+                    chai_1.expect(contact).to.be.an('object');
+                    chai_1.expect(contact).to.be.jsonSchema(contact_schema);
                 });
             }
             catch (e) {
@@ -76,15 +75,17 @@ var MessageTestSDK = (function () {
             }
         });
     };
-    MessageTestSDK.prototype.retrieve = function (access_token, msg, cb) {
+    AddressBookTestSDK.prototype.retrieve = function (access_token, contact, cb) {
         if (!access_token)
-            return cb(new TypeError('`access_token` argument to `retrieve` must be defined'));
-        else if (!msg)
-            return cb(new TypeError('`msg` argument to `retrieve` must be defined'));
+            return cb(new TypeError('`access_token` argument to `getAll` must be defined'));
+        else if (!contact)
+            return cb(new TypeError('`contact` argument to `getAll` must be defined'));
         supertest(this.app)
-            .get("/api/message/" + msg.to + "/" + msg.uuid)
+            .get("/api/contact/" + contact.email)
             .set('Connection', 'keep-alive')
             .set('X-Access-Token', access_token)
+            .expect('Content-Type', /json/)
+            .expect(200)
             .end(function (err, res) {
             if (err)
                 return cb(err);
@@ -92,7 +93,7 @@ var MessageTestSDK = (function () {
                 return cb(res.error);
             try {
                 chai_1.expect(res.body).to.be.an('object');
-                chai_1.expect(res.body).to.be.jsonSchema(message_schema);
+                chai_1.expect(res.body).to.be.jsonSchema(contact_schema);
             }
             catch (e) {
                 err = e;
@@ -102,22 +103,20 @@ var MessageTestSDK = (function () {
             }
         });
     };
-    MessageTestSDK.prototype.update = function (access_token, initial_msg, updated_msg, cb) {
+    AddressBookTestSDK.prototype.update = function (access_token, initial_contact, updated_contact, cb) {
         if (!access_token)
             return cb(new TypeError('`access_token` argument to `update` must be defined'));
-        else if (!initial_msg)
-            return cb(new TypeError('`initial_msg` argument to `update` must be defined'));
-        else if (!updated_msg)
-            return cb(new TypeError('`updated_msg` argument to `update` must be defined'));
-        else if (updated_msg.uuid !== initial_msg.uuid)
-            return cb(new ReferenceError(initial_msg.uuid + " != " + updated_msg.uuid + " (`uuid`s between msgs)"));
-        else if (updated_msg.to !== undefined && updated_msg.to !== initial_msg.to)
-            return cb(new ReferenceError(initial_msg.to + " != " + updated_msg.to + " (`to` between msgs)"));
+        else if (!initial_contact)
+            return cb(new TypeError('`initial_contact` argument to `update` must be defined'));
+        else if (!updated_contact)
+            return cb(new TypeError('`updated_contact` argument to `update` must be defined'));
+        else if (initial_contact.owner !== updated_contact.owner)
+            return cb(new ReferenceError(initial_contact.owner + " != " + updated_contact.owner + " (`owner`s between contacts)"));
         supertest(this.app)
-            .put("/api/message/" + initial_msg.to + "/" + initial_msg.uuid)
+            .put("/api/contact/" + initial_contact.email)
             .set('Connection', 'keep-alive')
             .set('X-Access-Token', access_token)
-            .send(updated_msg)
+            .send(updated_contact)
             .end(function (err, res) {
             if (err)
                 return cb(err);
@@ -125,8 +124,8 @@ var MessageTestSDK = (function () {
                 return cb(res.error);
             try {
                 chai_1.expect(res.body).to.be.an('object');
-                Object.keys(updated_msg).map(function (attr) { return chai_1.expect(updated_msg[attr]).to.be.equal(res.body[attr]); });
-                chai_1.expect(res.body).to.be.jsonSchema(message_schema);
+                Object.keys(updated_contact).map(function (attr) { return chai_1.expect(updated_contact[attr]).to.be.equal(res.body[attr]); });
+                chai_1.expect(res.body).to.be.jsonSchema(contact_schema);
             }
             catch (e) {
                 err = e;
@@ -136,13 +135,13 @@ var MessageTestSDK = (function () {
             }
         });
     };
-    MessageTestSDK.prototype.destroy = function (access_token, msg, cb) {
+    AddressBookTestSDK.prototype.destroy = function (access_token, contact, cb) {
         if (!access_token)
             return cb(new TypeError('`access_token` argument to `destroy` must be defined'));
-        else if (!msg)
-            return cb(new TypeError('`msg` argument to `destroy` must be defined'));
+        else if (!contact)
+            return cb(new TypeError('`contact` argument to `destroy` must be defined'));
         supertest(this.app)
-            .del("/api/message/" + msg.to + "/" + msg.uuid)
+            .del("/api/contact/" + contact.email)
             .set('Connection', 'keep-alive')
             .set('X-Access-Token', access_token)
             .end(function (err, res) {
@@ -161,6 +160,6 @@ var MessageTestSDK = (function () {
             }
         });
     };
-    return MessageTestSDK;
+    return AddressBookTestSDK;
 }());
-exports.MessageTestSDK = MessageTestSDK;
+exports.AddressBookTestSDK = AddressBookTestSDK;

@@ -1,8 +1,8 @@
 "use strict";
-var restify_validators_1 = require('restify-validators');
-var restify_errors_1 = require('restify-errors');
-var middleware_1 = require('./../auth/middleware');
-var main_1 = require('../../main');
+var restify_validators_1 = require("restify-validators");
+var restify_errors_1 = require("restify-errors");
+var main_1 = require("../../main");
+var middleware_1 = require("../auth/middleware");
 var message_schema = require('./../../test/api/message/schema');
 function create(app, namespace) {
     if (namespace === void 0) { namespace = ""; }

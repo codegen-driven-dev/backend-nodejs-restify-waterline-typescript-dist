@@ -1,18 +1,18 @@
 "use strict";
-var supertest = require('supertest');
-var chai_1 = require('chai');
-var async_1 = require('async');
-var restify_utils_1 = require('restify-utils');
-var main_1 = require('./../../../main');
-var auth_test_sdk_1 = require('./../auth/auth_test_sdk');
-var models_1 = require('./../../../api/auth/models');
-var user_mocks_1 = require('./user_mocks');
-var shared_tests_1 = require('../../shared_tests');
+var supertest = require("supertest");
+var chai_1 = require("chai");
+var async_1 = require("async");
+var restify_utils_1 = require("restify-utils");
+var main_1 = require("../../../main");
+var auth_test_sdk_1 = require("./../auth/auth_test_sdk");
+var models_1 = require("./../../../api/auth/models");
+var shared_tests_1 = require("../../shared_tests");
+var user_mocks_1 = require("./user_mocks");
 var models_and_routes = {
     user: main_1.all_models_and_routes['user'],
     auth: main_1.all_models_and_routes['auth'],
 };
-process.env.NO_SAMPLE_DATA = true;
+process.env['NO_SAMPLE_DATA'] = 'true';
 var mocks = user_mocks_1.user_mocks.successes.slice(10, 20);
 describe('User::routes', function () {
     var sdk, app;
@@ -34,7 +34,8 @@ describe('User::routes', function () {
                     sdk = new auth_test_sdk_1.AuthTestSDK(app);
                     return cb();
                 }
-            })); }], done);
+            })); }
+        ], done);
     });
     after(function (done) { return shared_tests_1.tearDownConnections(main_1.c.connections, done); });
     describe('/api/user', function () {

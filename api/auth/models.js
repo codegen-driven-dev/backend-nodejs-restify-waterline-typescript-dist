@@ -1,7 +1,7 @@
 "use strict";
-var node_uuid_1 = require('node-uuid');
-var main_1 = require('./../../main');
-var restify_errors_1 = require('restify-errors');
+var uuid_1 = require("uuid");
+var restify_errors_1 = require("restify-errors");
+var main_1 = require("../../main");
 exports.AccessToken = function () {
     var redis = main_1.redis_cursors.redis;
     return {
@@ -10,12 +10,12 @@ exports.AccessToken = function () {
             if (err)
                 return cb(err);
             else if (!user_id)
-                return cb(new restify_errors_1.NotFoundError('AccessToken'));
+                return cb(new restify_errors_1.AuthError('Nothing associated with that access token'));
             return cb(void 0, user_id);
         }); },
         deleteOne: function (access_token, cb) { return redis.del(access_token, cb); },
         add: function (user_id, scope, cb) {
-            var new_key = scope + "::" + node_uuid_1.v4();
+            var new_key = scope + "::" + uuid_1.v4();
             var t = redis.multi();
             t.set(new_key, user_id);
             t.sadd(user_id, new_key);

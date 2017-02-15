@@ -1,11 +1,11 @@
 "use strict";
-var async_1 = require('async');
-var restify_validators_1 = require('restify-validators');
-var nodejs_utils_1 = require('nodejs-utils');
-var restify_errors_1 = require('restify-errors');
-var middleware_1 = require('./../auth/middleware');
-var models_1 = require('./../auth/models');
-var main_1 = require('../../main');
+var async_1 = require("async");
+var restify_validators_1 = require("restify-validators");
+var nodejs_utils_1 = require("nodejs-utils");
+var restify_errors_1 = require("restify-errors");
+var main_1 = require("../../main");
+var middleware_1 = require("../auth/middleware");
+var models_1 = require("../auth/models");
 var user_schema = require('./../../test/api/user/schema');
 function create(app, namespace) {
     if (namespace === void 0) { namespace = ""; }
@@ -62,12 +62,12 @@ function update(app, namespace) {
                 return cb(err, user);
             }); },
             function (user, cb) {
-                return User.update(user, req.body, function (e, r) { return cb(e, r[0]); });
+                return User.update(user, req.body, function (err, updated_users) { return cb(err, updated_users[0]); });
             }
-        ], function (error, result) {
+        ], function (error, updated_user) {
             if (error)
                 return next(restify_errors_1.fmtError(error));
-            res.json(200, result);
+            res.json(200, updated_user);
             return next();
         });
     });

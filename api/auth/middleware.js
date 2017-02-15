@@ -1,6 +1,6 @@
 "use strict";
-var models_1 = require('./models');
-var restify_errors_1 = require('restify-errors');
+var restify_errors_1 = require("restify-errors");
+var models_1 = require("./models");
 function has_auth(scope) {
     if (scope === void 0) { scope = 'login'; }
     return function (req, res, next) {

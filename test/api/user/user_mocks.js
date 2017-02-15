@@ -1,5 +1,5 @@
 "use strict";
-var faker = require('faker');
+var faker = require("faker");
 exports.user_mocks = {
     "failures": [
         {},

@@ -1,6 +1,6 @@
 "use strict";
 var user_mocks_1 = require("../user/user_mocks");
-exports.message_mocks = function (users) { return ({
+exports.contact_mocks = function (users) { return ({
     "failures": [
         {},
         { "email": "foo@bar.com " },
@@ -13,13 +13,12 @@ exports.message_mocks = function (users) { return ({
             "can " + Math.random() + " count", "can " + Math.random() + " count"
         ].forEach(function (msg) { return (function (date) {
             return users.forEach(function (user, idx) { return ob.push({
-                uuid: users[idx === 0 ? 1 : 0].email + "::" + user.email + "::" + date.toISOString(),
-                createdAt: date, updatedAt: date,
-                to: user.email, from: users[idx === 0 ? 1 : 0].email, message: msg
+                email: user.email,
+                owner: users[idx === 0 ? 1 : 0].email
             }); });
         })(new Date()); }) || ob;
     })()
 }); };
 if (require.main === module) {
-    console.info(exports.message_mocks(user_mocks_1.user_mocks.successes.slice(20, 30)));
+    console.info(exports.contact_mocks(user_mocks_1.user_mocks.successes.slice(20, 30)));
 }

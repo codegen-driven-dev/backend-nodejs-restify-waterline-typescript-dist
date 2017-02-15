@@ -1,8 +1,8 @@
 "use strict";
-var supertest = require('supertest');
-var chai_1 = require('chai');
-var restify_utils_1 = require('restify-utils');
-var main_1 = require('./../../../main');
+var supertest = require("supertest");
+var chai_1 = require("chai");
+var restify_utils_1 = require("restify-utils");
+var main_1 = require("../../../main");
 describe('Root::routes', function () {
     var app;
     before(function (done) {

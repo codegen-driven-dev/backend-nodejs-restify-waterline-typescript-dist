@@ -1,10 +1,10 @@
 "use strict";
-var async_1 = require('async');
-var restify_validators_1 = require('restify-validators');
-var restify_errors_1 = require('restify-errors');
-var middleware_1 = require('./middleware');
-var models_1 = require('./models');
-var main_1 = require('../../main');
+var async_1 = require("async");
+var restify_validators_1 = require("restify-validators");
+var restify_errors_1 = require("restify-errors");
+var main_1 = require("../../main");
+var middleware_1 = require("./middleware");
+var models_1 = require("./models");
 var user_schema = require('./../../test/api/user/schema');
 function login(app, namespace) {
     if (namespace === void 0) { namespace = ""; }

@@ -1,15 +1,18 @@
 "use strict";
-var waterline_postgres = require('waterline-postgresql');
-var bunyan_1 = require('bunyan');
-var nodejs_utils_1 = require('nodejs-utils');
-var SampleData_1 = require('./test/SampleData');
-var restify_utils_1 = require('restify-utils');
+var waterline_postgres = require("waterline-postgresql");
+var bunyan_1 = require("bunyan");
+var nodejs_utils_1 = require("nodejs-utils");
+var restify_utils_1 = require("restify-utils");
+var SampleData_1 = require("./test/SampleData");
 exports.package_ = require('./package');
 exports.logger = bunyan_1.createLogger({
     name: 'main'
 });
-process.env.NO_DEBUG || exports.logger.info(Object.keys(process.env).sort().map(function (k) { return ((_a = {}, _a[k] = process.env[k], _a)); var _a; }));
-var db_uri = process.env.RDBMS_URI || process.env.DATABASE_URL || process.env.POSTGRES_URL;
+process.env['NO_DEBUG'] || exports.logger.info(Object.keys(process.env).sort().map(function (k) {
+    return (_a = {}, _a[k] = process.env[k], _a);
+    var _a;
+}));
+var db_uri = process.env['RDBMS_URI'] || process.env['DATABASE_URL'] || process.env['POSTGRES_URL'];
 exports.waterline_config = Object.freeze({
     adapters: {
         url: db_uri,
